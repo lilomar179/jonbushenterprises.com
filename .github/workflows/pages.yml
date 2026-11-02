@@ -40,7 +40,7 @@ jobs:
           mkdir _site
           cp -r index.html CNAME .nojekyll assets _site/
           ls -R _site
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
       - id: deployment
