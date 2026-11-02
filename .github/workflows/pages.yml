@@ -33,3 +33,23 @@ jobs:
           path: .
       - id: deployment
         uses: actions/deploy-pages@v4
+  verify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check live site, www, HTTPS and link-preview assets
+        run: |
+          sleep 30
+          set -e
+          echo "apex:  $(curl -sS -o /dev/null -w '%{http_code}' https://jonbushenterprises.com/)"
+          echo "www:   $(curl -sS -o /dev/null -w '%{http_code} -> %{redirect_url}' https://www.jonbushenterprises.com/)"
+          echo "http:  $(curl -sS -o /dev/null -w '%{http_code} -> %{redirect_url}' http://jonbushenterprises.com/)"
+          echo "cert:  $(echo | openssl s_client -connect jonbushenterprises.com:443 -servername jonbushenterprises.com 2>/dev/null | openssl x509 -noout -subject -issuer -enddate | tr '\n' ' ')"
+          echo "wcert: $(echo | openssl s_client -connect www.jonbushenterprises.com:443 -servername www.jonbushenterprises.com 2>/dev/null | openssl x509 -noout -ext subjectAltName | tr '\n' ' ')"
+          for a in assets/og-image.png assets/apple-touch-icon.png assets/favicon-32.png assets/shots/permitvista.jpg assets/shots/espiralusa.jpg; do
+            echo "$a: $(curl -sS -o /dev/null -w '%{http_code} %{content_type} %{size_download}B' https://jonbushenterprises.com/$a)"
+          done
+          html=$(curl -sS https://jonbushenterprises.com/)
+          for k in 'og:image" content="https://jonbushenterprises.com/assets/og-image.png' 'summary_large_image' 'apple-touch-icon' 'See it live' 'id="live-work"' 'goatcounter'; do
+            echo "$html" | grep -q "$k" && echo "found: $k" || echo "MISSING: $k"
+          done
