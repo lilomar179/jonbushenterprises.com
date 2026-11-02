@@ -1,0 +1,68 @@
+name: Checks
+# Runs on every pull request, and is called by the deploy workflow before each deploy to main.
+# Also runs weekly to catch external links that have broken since the last change.
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 13 * * 1' # Mondays 13:17 UTC
+permissions:
+  contents: read
+jobs:
+  validate:
+    name: HTML is valid
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run validate
+
+  test:
+    name: Site tests (desktop + mobile)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - name: Keep the test report if anything failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  links:
+    name: External links work
+    # Not run before deploys: a slow third-party site shouldn't block shipping. PRs and the weekly run still check.
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          fail: true
+          args: >-
+            --no-progress
+            --max-retries 3
+            --timeout 90
+            --accept 200..=299,403,429
+            --exclude linkedin\.com
+            --exclude goatcounter\.com
+            --exclude gc\.zgo\.at
+            --exclude fonts\.googleapis\.com
+            --exclude fonts\.gstatic\.com
+            --exclude jonbushenterprises\.com
+            index.html
