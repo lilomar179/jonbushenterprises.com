@@ -21,6 +21,13 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Capture live-site thumbnails
+        continue-on-error: true
+        timeout-minutes: 6
+        run: |
+          mkdir -p /tmp/shots && cd /tmp/shots && npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+          cp "$GITHUB_WORKSPACE/.github/scripts/shots.mjs" . && cd "$GITHUB_WORKSPACE" && node /tmp/shots/shots.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

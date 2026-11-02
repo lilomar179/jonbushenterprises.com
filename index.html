@@ -3,13 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jon Bush Enterprises</title>
+<title>Jon Bush Enterprises · Data platforms, integrations &amp; custom software</title>
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <meta name="description" content="Enterprise data platforms, SaaS integrations and custom software. Fixed scope, fixed price, half up front. Miami, FL.">
-<meta property="og:title" content="Jon Bush Enterprises">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jon Bush Enterprises">
+<meta property="og:title" content="Jon Bush Enterprises · Data platforms, integrations &amp; custom software">
 <meta property="og:description" content="Production data platforms, integrations and custom software for companies that have outgrown spreadsheets. Fixed scope, fixed price.">
-<meta property="og:image" content="https://jonbushenterprises.com/assets/logo.png">
+<meta property="og:image" content="https://jonbushenterprises.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jon Bush Enterprises: data platforms, integrations and custom software. jonbushenterprises.com">
 <meta property="og:url" content="https://jonbushenterprises.com/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jon Bush Enterprises · Data platforms, integrations &amp; custom software">
+<meta name="twitter:description" content="Production data platforms, integrations and custom software for companies that have outgrown spreadsheets. Fixed scope, fixed price.">
+<meta name="twitter:image" content="https://jonbushenterprises.com/assets/og-image.png">
 <link rel="canonical" href="https://jonbushenterprises.com/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -74,8 +85,25 @@ section + section{border-top:1px solid var(--line)}
 .terms .split{display:flex;gap:8px;font-family:var(--mono);font-size:.95rem}
 .terms .split span{background:var(--surface);border:1px solid var(--line);padding:8px 12px;border-radius:8px}
 .work{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:28px}
-.work a{color:inherit;text-decoration:none}
+.work .card{padding:16px 16px 20px}
 .work .card:hover{border-color:var(--accent)}
+.work h3 a{color:inherit;text-decoration:none}
+.work .card > p{padding:0 4px}
+.work h3,.work .meta,.work .actions{padding:0 4px}
+.shot{display:block;aspect-ratio:16/10;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+.shot img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.shot.none{border-style:dashed;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:var(--mono);font-size:.8rem;text-align:center;padding:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.btn.sm{padding:8px 14px;font-size:.9rem;border-radius:7px}
+.live-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.live-row b{font-family:var(--display);font-weight:700;font-size:.95rem;margin-right:4px}
+.live-row a{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.9rem;font-weight:500;color:var(--ink);text-decoration:none;background:var(--accent-soft);border:1px solid var(--accent);padding:7px 12px;border-radius:8px}
+.live-row a:hover{background:var(--surface)}
+.live-row a::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.foot nav{display:flex;gap:16px;flex-wrap:wrap}
+.foot a{color:var(--muted)}
+.foot a:hover{color:var(--accent)}
 .tag{display:inline-block;font-family:var(--mono);font-size:.75rem;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
 .tag.live{border-color:var(--accent);color:var(--accent)}
 .work .meta{display:flex;gap:8px;flex-wrap:wrap}
@@ -123,8 +151,8 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
   <div class="wrap nav">
     <a class="brand" href="#" data-home><img src="assets/logo.svg" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:8px;border-radius:6px">Jon Bush <span>Enterprises</span></a>
     <ul>
+      <li><a href="#live-work" data-home>Live work</a></li>
       <li><a href="#services" data-home>Services</a></li>
-      <li><a href="#work" data-home>Work</a></li>
       <li><a href="#process" data-home>Process</a></li>
       <li><a href="#about" data-home>About</a></li>
       <li><a href="#contact" data-home>Contact</a></li>
@@ -141,7 +169,12 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
     <p class="lede">I design and build data platforms, SaaS integrations and custom software that run unattended, reconcile to the penny, and ship with tests. Fixed scope, fixed price, half up front.</p>
     <div class="cta">
       <a class="btn" href="https://cal.com/jonbush/scoping-call">Book a scoping call</a>
-      <a class="btn ghost" href="#work" data-home>See the work</a>
+      <a class="btn ghost" href="#live-work" data-home>See the work</a>
+    </div>
+    <div class="live-row" aria-label="Live products">
+      <b>See it live</b>
+      <a href="https://permitvista.com" target="_blank" rel="noopener">permitvista.com ↗</a>
+      <a href="https://espiralusa.com" target="_blank" rel="noopener">espiralusa.com ↗</a>
     </div>
     <div class="proof">
       <div><b>4M+</b><small>Florida permits indexed for PermitVista</small></div>
@@ -149,6 +182,56 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
       <div><b>$0.00</b><small>variance across 500+ reconciled fills</small></div>
       <div><b>~85 ms</b><small>order latency, live trading engine</small></div>
       <div><b>10+ yrs</b><small>Python, Azure, Salesforce, Snowflake</small></div>
+    </div>
+  </div>
+</section>
+
+<section id="live-work">
+  <div class="wrap">
+    <p class="eyebrow">Live work</p>
+    <h2>Real products first. Two are live right now.</h2>
+    <div class="work">
+      <article class="card">
+        <a class="shot" href="https://permitvista.com" target="_blank" rel="noopener" aria-label="Open permitvista.com"><img src="assets/shots/permitvista.jpg" alt="permitvista.com home page" loading="lazy" width="640" height="400"></a>
+        <div class="meta"><span class="tag live">Live</span><span class="tag">Proptech</span></div>
+        <h3><a href="#permitvista">PermitVista</a></h3>
+        <p style="color:var(--muted)">Instant building-permit history for any Florida property. 4M+ permits, 50+ jurisdictions, results in seconds.</p>
+        <div class="actions"><a class="btn sm" href="https://permitvista.com" target="_blank" rel="noopener">Visit site ↗</a><a class="btn sm ghost" href="#permitvista">Case study</a></div>
+      </article>
+      <article class="card">
+        <a class="shot" href="https://espiralusa.com" target="_blank" rel="noopener" aria-label="Open espiralusa.com"><img src="assets/shots/espiralusa.jpg" alt="espiralusa.com home page" loading="lazy" width="640" height="400"></a>
+        <div class="meta"><span class="tag live">Live</span><span class="tag">Fintech</span></div>
+        <h3><a href="#espiral">Espiral USA</a></h3>
+        <p style="color:var(--muted)">Cross-border money app on stablecoin rails. 5 corridors, same-day sends, built as CTO with a two-person team.</p>
+        <div class="actions"><a class="btn sm" href="https://espiralusa.com" target="_blank" rel="noopener">Visit site ↗</a><a class="btn sm ghost" href="#espiral">Case study</a></div>
+      </article>
+      <article class="card">
+        <div class="shot none">Link added at launch</div>
+        <div class="meta"><span class="tag">Launching soon</span><span class="tag">Marketplace</span></div>
+        <h3><a href="#moviz">Moviz</a></h3>
+        <p style="color:var(--muted)">Peer-to-peer car rental marketplace for Guadalajara. 63 API endpoints, 129 tests, bilingual, with chauffeurs.</p>
+        <div class="actions"><a class="btn sm ghost" href="#moviz">Case study</a></div>
+      </article>
+      <article class="card">
+        <div class="shot none">Private build · no public link</div>
+        <div class="meta"><span class="tag">Private build</span><span class="tag">Trading systems</span></div>
+        <h3><a href="#polymarket-edge">Polymarket Edge</a></h3>
+        <p style="color:var(--muted)">24/7 market-making engine quoting 58 markets, with fill-by-fill reconciliation to $0.00 variance.</p>
+        <div class="actions"><a class="btn sm ghost" href="#polymarket-edge">Case study</a><a class="btn sm ghost" href="#services" data-home>Trading Systems Build</a></div>
+      </article>
+      <article class="card">
+        <div class="shot none">In build · no public link</div>
+        <div class="meta"><span class="tag">In build</span><span class="tag">Legal tech</span></div>
+        <h3><a href="#juryflow">JuryFlow</a></h3>
+        <p style="color:var(--muted)">Multi-tenant legal CRM, billing and intake platform syncing with Clio, Filevine and LawPay.</p>
+        <div class="actions"><a class="btn sm ghost" href="#juryflow">Case study</a></div>
+      </article>
+      <article class="card">
+        <div class="shot none">Client work · client stays anonymous</div>
+        <div class="meta"><span class="tag">Client work</span><span class="tag">Healthcare nonprofit</span></div>
+        <h3>Enterprise data platform</h3>
+        <p style="color:var(--muted)">Salesforce, IntakeQ, Azure and SQL Server integration for a veteran-services organization: 243,000+ records across 9 entities, sub-3-second webhooks, ETL cut from days to minutes.</p>
+      </article>
     </div>
   </div>
 </section>
@@ -218,49 +301,6 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
   </div>
 </section>
 
-<section id="work">
-  <div class="wrap">
-    <p class="eyebrow">Selected work</p>
-    <h2>Five production systems across fintech, proptech, legal, mobility and trading.</h2>
-    <div class="work">
-      <a href="#permitvista"><article class="card">
-        <div class="meta"><span class="tag live">Live · paying customers</span><span class="tag">Proptech</span></div>
-        <h3>PermitVista</h3>
-        <p style="color:var(--muted)">Instant building-permit history for any Florida property. 4M+ permits, 50+ jurisdictions, results in seconds.</p>
-        <span class="more">Read the case study →</span>
-      </article></a>
-      <a href="#espiral"><article class="card">
-        <div class="meta"><span class="tag live">Live · pre-launch</span><span class="tag">Fintech</span></div>
-        <h3>Espiral USA</h3>
-        <p style="color:var(--muted)">Cross-border money app on stablecoin rails. 5 corridors, same-day sends, built as CTO with a two-person team.</p>
-        <span class="more">Read the case study →</span>
-      </article></a>
-      <a href="#polymarket-edge"><article class="card">
-        <div class="meta"><span class="tag live">Live · production</span><span class="tag">Trading systems</span></div>
-        <h3>Polymarket Edge</h3>
-        <p style="color:var(--muted)">24/7 market-making engine quoting 58 markets, with fill-by-fill reconciliation to $0.00 variance.</p>
-        <span class="more">Read the case study →</span>
-      </article></a>
-      <a href="#moviz"><article class="card">
-        <div class="meta"><span class="tag">Live beta</span><span class="tag">Marketplace</span></div>
-        <h3>Moviz</h3>
-        <p style="color:var(--muted)">Peer-to-peer car rental marketplace for Guadalajara. 63 API endpoints, 129 tests, bilingual, with chauffeurs.</p>
-        <span class="more">Read the case study →</span>
-      </article></a>
-      <a href="#juryflow"><article class="card">
-        <div class="meta"><span class="tag">In development</span><span class="tag">Legal tech</span></div>
-        <h3>JuryFlow</h3>
-        <p style="color:var(--muted)">Multi-tenant legal CRM, billing and intake platform syncing with Clio, Filevine and LawPay.</p>
-        <span class="more">Read the case study →</span>
-      </article></a>
-      <article class="card">
-        <div class="meta"><span class="tag">Enterprise · 2023–2026</span><span class="tag">Healthcare nonprofit</span></div>
-        <h3>CRM &amp; Data Integration Platform</h3>
-        <p style="color:var(--muted)">Salesforce, IntakeQ, Azure and SQL Server integration for a veteran-services organization: 243,000+ records across 9 entities, sub-3-second webhooks, ETL cut from days to minutes.</p>
-      </article>
-    </div>
-  </div>
-</section>
 
 <section id="process">
   <div class="wrap">
@@ -312,21 +352,21 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
   </div>
 </section>
 
-<footer><div class="wrap">© 2026 Jon Bush Enterprises LLC · Florida</div></footer>
+<footer><div class="wrap foot"><span>© 2026 Jon Bush Enterprises LLC · Florida</span><nav aria-label="Live products"><a href="https://permitvista.com" target="_blank" rel="noopener">permitvista.com ↗</a><a href="https://espiralusa.com" target="_blank" rel="noopener">espiralusa.com ↗</a></nav></div></footer>
 </main>
 
 <!-- ===================== PROJECT PAGES ===================== -->
 
 <article class="project" id="permitvista">
 <section><div class="wrap">
-  <a class="back" href="#work" data-home>← All work</a>
+  <a class="back" href="#live-work" data-home>← All work</a>
   <div class="head">
     <div>
       <p class="eyebrow">Case study · Proptech</p>
       <h1>PermitVista</h1>
       <p class="lede">Instant building-permit history for any Florida property.</p>
       <div class="status"><span class="tag live">Live · paying customers</span><span class="tag">Founder &amp; sole engineer</span></div>
-      <a class="btn ghost" href="https://permitvista.com">Visit permitvista.com</a>
+      <a class="btn" href="https://permitvista.com" target="_blank" rel="noopener">Visit permitvista.com ↗</a>
     </div>
     <div class="facts"><dl>
       <dt>Scale</dt><dd>4M+ permits indexed · 50+ jurisdictions · results in seconds</dd>
@@ -351,14 +391,14 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
 
 <article class="project" id="espiral">
 <section><div class="wrap">
-  <a class="back" href="#work" data-home>← All work</a>
+  <a class="back" href="#live-work" data-home>← All work</a>
   <div class="head">
     <div>
       <p class="eyebrow">Case study · Fintech</p>
       <h1>Espiral USA</h1>
       <p class="lede">A cross-border money app for US customers sending to Latin America, the UK and Europe.</p>
       <div class="status"><span class="tag live">Live · pre-launch</span><span class="tag">CTO</span></div>
-      <a class="btn ghost" href="https://espiralusa.com">Visit espiralusa.com</a>
+      <a class="btn" href="https://espiralusa.com" target="_blank" rel="noopener">Visit espiralusa.com ↗</a>
     </div>
     <div class="facts"><dl>
       <dt>Scale</dt><dd>5 corridors · 100 PRs and 135 tickets shipped in 8 weeks · two-person team</dd>
@@ -382,13 +422,13 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
 
 <article class="project" id="polymarket-edge">
 <section><div class="wrap">
-  <a class="back" href="#work" data-home>← All work</a>
+  <a class="back" href="#live-work" data-home>← All work</a>
   <div class="head">
     <div>
       <p class="eyebrow">Case study · Trading systems</p>
       <h1>Polymarket Edge</h1>
       <p class="lede">An automated market-making and research platform for Polymarket US, running unattended with real capital.</p>
-      <div class="status"><span class="tag live">Live · production</span><span class="tag">Sole engineer</span></div>
+      <div class="status"><span class="tag">Private build · in production</span><span class="tag">Sole engineer</span></div>
     </div>
     <div class="facts"><dl>
       <dt>Scale</dt><dd>58 markets quoted continuously · ~200 fills/day · ~85 ms order latency · 25,000+ snapshots per game</dd>
@@ -415,13 +455,13 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
 
 <article class="project" id="moviz">
 <section><div class="wrap">
-  <a class="back" href="#work" data-home>← All work</a>
+  <a class="back" href="#live-work" data-home>← All work</a>
   <div class="head">
     <div>
       <p class="eyebrow">Case study · Marketplace</p>
       <h1>Moviz</h1>
       <p class="lede">A peer-to-peer car rental marketplace for Guadalajara, with optional chauffeurs.</p>
-      <div class="status"><span class="tag">Live beta · soft launch next</span><span class="tag">Co-founder &amp; CTO</span></div>
+      <div class="status"><span class="tag">Launching soon</span><span class="tag">Co-founder &amp; CTO</span></div>
     </div>
     <div class="facts"><dl>
       <dt>Scale</dt><dd>~22,700 lines of code · 63 API endpoints · 129 automated tests · v2.8.0</dd>
@@ -445,7 +485,7 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
 
 <article class="project" id="juryflow">
 <section><div class="wrap">
-  <a class="back" href="#work" data-home>← All work</a>
+  <a class="back" href="#live-work" data-home>← All work</a>
   <div class="head">
     <div>
       <p class="eyebrow">Case study · Legal tech</p>
@@ -479,6 +519,7 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
   var home = document.getElementById('home');
   function route(){
     var h = (location.hash || '#').slice(1);
+    if (h === 'work') { h = 'live-work'; }
     var isProject = projects.indexOf(h) !== -1;
     home.classList.toggle('hidden', isProject);
     projects.forEach(function(id){
@@ -494,5 +535,6 @@ footer{padding:28px 0;color:var(--muted);font-size:.9rem;border-top:1px solid va
   route();
 })();
 </script>
+<script data-goatcounter="https://jonbushenterprises.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
