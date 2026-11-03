@@ -64,5 +64,5 @@ jobs:
             --exclude gc\.zgo\.at
             --exclude fonts\.googleapis\.com
             --exclude fonts\.gstatic\.com
-            --exclude jonbushenterprises\.com
+            --exclude ^https?://jonbushenterprises\.com
             index.html
