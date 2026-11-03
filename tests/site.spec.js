@@ -25,6 +25,16 @@ function trackErrors(page) {
   return errors;
 }
 
+// Keep tests hermetic: block every request that isn't the local test server. Third-party scripts
+// (fonts, the Cloudflare analytics beacon) would otherwise make tests depend on the network and
+// count CI runs as visits in the site's analytics.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/*', (route) => {
+    const host = new URL(route.request().url()).hostname;
+    return host === '127.0.0.1' || host === 'localhost' ? route.continue() : route.abort();
+  });
+});
+
 test.describe('home page', () => {
   test('loads without script errors and shows the main sections', async ({ page }) => {
     const errors = trackErrors(page);

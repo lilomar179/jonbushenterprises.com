@@ -22,7 +22,7 @@ const SENTINEL = {
   seeItLiveNav: 'class="live-row"',
   bookingUrl: 'https://cal.com/jonbush/scoping-call',
   ogImage: 'https://jonbushenterprises.com/assets/og-image.png',
-  analytics: 'data-goatcounter=',
+  analytics: 'static.cloudflareinsights.com/beacon.min.js',
 };
 const BANNED = ['scraping', 'served with honor'];
 
@@ -72,7 +72,7 @@ async function probe(html, assetOk) {
     return ok;
   });
 
-  await run('analytics', () => html.includes(SENTINEL.analytics));
+  await run('analytics', () => html.includes(SENTINEL.analytics) && /data-cf-beacon='\{"token": "[0-9a-f]{32}"\}'/.test(html));
   await run('content_rules_clean', () => !BANNED.some((w) => html.toLowerCase().includes(w)));
   return f;
 }
