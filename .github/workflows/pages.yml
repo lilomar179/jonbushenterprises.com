@@ -58,7 +58,7 @@ jobs:
           echo "www:  $(curl -sS -o /dev/null -w '%{http_code} -> %{redirect_url}' https://www.jonbushenterprises.com/)"
           echo "http: $(curl -sS -o /dev/null -w '%{http_code} -> %{redirect_url}' http://jonbushenterprises.com/)"
           echo "cert: $(echo | openssl s_client -connect jonbushenterprises.com:443 -servername jonbushenterprises.com 2>/dev/null | openssl x509 -noout -enddate)"
-          for a in assets/og-image.png assets/apple-touch-icon.png assets/favicon-32.png assets/shots/permitvista.jpg assets/shots/espiralusa.jpg assets/shots/moviz.jpg; do
+          for a in assets/og-image.png assets/apple-touch-icon.png assets/favicon-32.png assets/shots/permitvista.jpg assets/shots/espiralusa.jpg assets/shots/moviz.jpg assets/shots/trading.jpg; do
             code=$(curl -sS -o /dev/null -w '%{http_code}' https://jonbushenterprises.com/$a); echo "$a: $code"; [ "$code" = 200 ] || fail=1
           done
           code=$(curl -sS -o /dev/null -w '%{http_code}' https://jonbushenterprises.com/package.json); echo "package.json not public: $code"; [ "$code" = 404 ] || fail=1

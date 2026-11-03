@@ -11,6 +11,7 @@ const LIVE = {
   'https://permitvista.com': 'PermitVista',
   'https://espiralusa.com': 'Espiral USA',
   'https://moviz-web-1rkd.onrender.com': 'Moviz',
+  'https://trading.jonbushenterprises.com': 'Polymarket Edge',
 };
 
 // Collect script errors on our own origin. Third-party requests (fonts, analytics) are ignored so the
@@ -54,7 +55,7 @@ test.describe('home page', () => {
       ['PermitVista', 'Live', 'https://permitvista.com'],
       ['Espiral USA', 'Live', 'https://espiralusa.com'],
       ['Moviz', 'Live beta', 'https://moviz-web-1rkd.onrender.com'],
-      ['Polymarket Edge', 'Private build', null],
+      ['Polymarket Edge', 'Live results', 'https://trading.jonbushenterprises.com'],
       ['JuryFlow', 'In build', null],
       ['Enterprise data platform', 'Client work', null],
     ];
@@ -76,7 +77,7 @@ test.describe('home page', () => {
     await page.goto('/#live-work');
     const imgs = page.locator('#live-work .shot img');
     const n = await imgs.count();
-    expect(n).toBe(3);
+    expect(n).toBe(4);
     for (let i = 0; i < n; i++) {
       await imgs.nth(i).scrollIntoViewIfNeeded();
       await expect.poll(() => imgs.nth(i).evaluate((el) => el.complete && el.naturalWidth)).toBeGreaterThan(0);
@@ -145,7 +146,7 @@ test.describe('navigation and routing', () => {
   });
 
   test('live case studies have a Visit button at the top', async ({ page }) => {
-    for (const [id, url] of [['permitvista', 'https://permitvista.com'], ['espiral', 'https://espiralusa.com'], ['moviz', 'https://moviz-web-1rkd.onrender.com']]) {
+    for (const [id, url] of [['permitvista', 'https://permitvista.com'], ['espiral', 'https://espiralusa.com'], ['moviz', 'https://moviz-web-1rkd.onrender.com'], ['polymarket-edge', 'https://trading.jonbushenterprises.com']]) {
       await page.goto(`/#${id}`);
       const btn = page.locator(`#${id} .head a.btn[href="${url}"]`);
       await expect(btn).toBeVisible();

@@ -1,7 +1,7 @@
 // Captures fresh thumbnails of the live products at deploy time.
 // If a site can't be reached, the committed fallback image in assets/shots/ is kept.
 import { chromium } from 'playwright';
-const sites = [['https://permitvista.com', 'assets/shots/permitvista.jpg'], ['https://espiralusa.com', 'assets/shots/espiralusa.jpg'], ['https://moviz-web-1rkd.onrender.com', 'assets/shots/moviz.jpg']];
+const sites = [['https://permitvista.com', 'assets/shots/permitvista.jpg'], ['https://espiralusa.com', 'assets/shots/espiralusa.jpg'], ['https://moviz-web-1rkd.onrender.com', 'assets/shots/moviz.jpg'], ['https://trading.jonbushenterprises.com', 'assets/shots/trading.jpg']];
 const browser = await chromium.launch();
 for (const [url, out] of sites) {
   try {
