@@ -1,5 +1,6 @@
 name: Deploy site to GitHub Pages
-# Every push to main runs the checks first; the site only deploys if they pass.
+# Every push to main: run the checks, record what's live now (baseline), deploy, then prove the new
+# build is what's being served and that nothing regressed. See .github/scripts/health.cjs.
 on:
   push:
     branches: [main]
@@ -9,12 +10,27 @@ permissions:
 concurrency:
   group: pages
   cancel-in-progress: true
+env:
+  SITE: https://jonbushenterprises.com
 jobs:
   checks:
     uses: ./.github/workflows/ci.yml
 
+  baseline:
+    name: Record live health before deploy
+    runs-on: ubuntu-latest
+    outputs:
+      before: ${{ steps.get.outputs.before }}
+    steps:
+      - id: get
+        run: |
+          # First deploy with this check has no health.json yet; an empty baseline means "nothing to regress against".
+          body=$(curl -sf --retry 3 --retry-all-errors "$SITE/health.json?t=$(date +%s)" || echo '{}')
+          echo "$body" | jq . || body='{}'
+          echo "before=$(echo "$body" | jq -c .)" >> "$GITHUB_OUTPUT"
+
   deploy:
-    needs: checks
+    needs: [checks, baseline]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -39,7 +55,8 @@ jobs:
         run: |
           mkdir _site
           cp -r index.html CNAME .nojekyll assets _site/
-          ls -R _site
+      - name: Write health.json from the built files
+        run: node .github/scripts/health.cjs build _site "$GITHUB_SHA"
       - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
@@ -47,19 +64,78 @@ jobs:
         uses: actions/deploy-pages@v5
 
   verify:
-    needs: deploy
+    name: Verify the live site
+    needs: [baseline, deploy]
     runs-on: ubuntu-latest
     steps:
-      - name: Check live site, www, HTTPS and link-preview assets
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Wait until the live site reports this commit
         run: |
-          sleep 30
-          fail=0
-          code=$(curl -sS -o /dev/null -w '%{http_code}' https://jonbushenterprises.com/); echo "apex: $code"; [ "$code" = 200 ] || fail=1
-          echo "www:  $(curl -sS -o /dev/null -w '%{http_code} -> %{redirect_url}' https://www.jonbushenterprises.com/)"
-          echo "http: $(curl -sS -o /dev/null -w '%{http_code} -> %{redirect_url}' http://jonbushenterprises.com/)"
-          echo "cert: $(echo | openssl s_client -connect jonbushenterprises.com:443 -servername jonbushenterprises.com 2>/dev/null | openssl x509 -noout -enddate)"
-          for a in assets/og-image.png assets/apple-touch-icon.png assets/favicon-32.png assets/shots/permitvista.jpg assets/shots/espiralusa.jpg assets/shots/moviz.jpg assets/shots/trading.jpg; do
-            code=$(curl -sS -o /dev/null -w '%{http_code}' https://jonbushenterprises.com/$a); echo "$a: $code"; [ "$code" = 200 ] || fail=1
+          for i in $(seq 1 40); do
+            live=$(curl -sf --retry 2 "$SITE/health.json?t=$(date +%s%N)" | jq -r '.commit // empty' || true)
+            echo "attempt $i: live commit=${live:-none}, expected=$GITHUB_SHA"
+            [ "$live" = "$GITHUB_SHA" ] && exit 0
+            sleep 6
           done
-          code=$(curl -sS -o /dev/null -w '%{http_code}' https://jonbushenterprises.com/package.json); echo "package.json not public: $code"; [ "$code" = 404 ] || fail=1
+          echo "::error::Deploy did not land: the live site never reported commit $GITHUB_SHA"
+          exit 1
+
+      - name: Save health files
+        env:
+          BEFORE: ${{ needs.baseline.outputs.before }}
+        run: |
+          if [ -n "$BEFORE" ] && echo "$BEFORE" | jq . > before.json; then :; else echo '{}' > before.json; fi
+          curl -sf --retry 3 --retry-all-errors "$SITE/health.json?t=$(date +%s)" | jq . > built.json
+          node .github/scripts/health.cjs live "$SITE" > live.json
+          cat built.json
+
+      - name: Live site matches what was built
+        run: |
+          if ! diff <(jq -S .features_verified built.json) <(jq -S .features_verified live.json); then
+            echo "::error::The live site's files don't match the build (stale cache or missing asset). Diff above: < built, > live"
+            exit 1
+          fi
+          echo "Live features match the build."
+
+      - name: Nothing regressed since the last deploy
+        env:
+          MSG: ${{ github.event.head_commit.message }}
+        run: |
+          if node .github/scripts/health.cjs diff before.json built.json; then exit 0; fi
+          if printf '%s' "$MSG" | grep -q '\[health-ok\]'; then
+            echo "::warning::Regression accepted: commit message contains [health-ok] (planned removal)."
+            exit 0
+          fi
+          echo "::error::A feature or count went down. If that was intended, put [health-ok] in the commit message."
+          exit 1
+
+      - name: Domain, HTTPS and privacy checks
+        run: |
+          fail=0
+          www=$(curl -sS --retry 3 --retry-all-errors -o /dev/null -w '%{http_code} %{redirect_url}' https://www.jonbushenterprises.com/)
+          http=$(curl -sS --retry 3 --retry-all-errors -o /dev/null -w '%{http_code} %{redirect_url}' http://jonbushenterprises.com/)
+          echo "www:  $www"; echo "$www" | grep -q '^301 https://jonbushenterprises.com/' || fail=1
+          echo "http: $http"; echo "$http" | grep -q '^301 https://jonbushenterprises.com/' || fail=1
+          end=$(echo | openssl s_client -connect jonbushenterprises.com:443 -servername jonbushenterprises.com 2>/dev/null | openssl x509 -noout -enddate | cut -d= -f2)
+          echo "cert expires: $end"
+          [ "$(date -d "$end" +%s)" -gt "$(date -d '+14 days' +%s)" ] || { echo "::error::HTTPS certificate expires within 14 days"; fail=1; }
+          code=$(curl -sS --retry 3 --retry-all-errors -o /dev/null -w '%{http_code}' "$SITE/package.json"); echo "package.json: $code (want 404)"; [ "$code" = 404 ] || fail=1
           exit $fail
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Live site health"
+            echo ""
+            echo "Commit \`$(jq -r .commit built.json 2>/dev/null)\` built $(jq -r .built_at built.json 2>/dev/null)"
+            echo ""
+            echo "| Flag | Before | Built | Live |"
+            echo "|---|---|---|---|"
+            jq -r --slurpfile b before.json --slurpfile l live.json '.features_verified | to_entries[] |
+              "| \(.key) | \($b[0].features_verified[.key] // "–") | \(.value) | \($l[0].features_verified[.key] // "–") |"' built.json 2>/dev/null || true
+          } >> "$GITHUB_STEP_SUMMARY"

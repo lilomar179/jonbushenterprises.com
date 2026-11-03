@@ -225,3 +225,21 @@ test.describe('content rules', () => {
     expect(bad).toEqual([]);
   });
 });
+
+test.describe('health probe', () => {
+  const { probe, regressions } = require('../.github/scripts/health.cjs');
+
+  test('every health flag is true on the current page', async () => {
+    const f = await probe(HTML, async (p) => fs.existsSync(path.join(ROOT, p)));
+    const off = Object.entries(f).filter(([, v]) => v === false || v === 0).map(([k]) => k);
+    expect(off, 'flags that came back false or 0 (did a sentinel get renamed?)').toEqual([]);
+    expect(f.live_products).toBe(Object.keys(LIVE).length);
+    expect(f.case_studies).toBe(PROJECTS.length);
+  });
+
+  test('regressions() flags dropped features and lower counts only', () => {
+    expect(regressions({ a: true, n: 4 }, { a: true, n: 5 })).toEqual([]);
+    expect(regressions({ a: true, n: 4 }, { a: false, n: 3 })).toEqual(['a: true -> false', 'n: 4 -> 3']);
+    expect(regressions({}, { a: true })).toEqual([]);
+  });
+});
