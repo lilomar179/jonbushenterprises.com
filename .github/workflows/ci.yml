@@ -32,7 +32,17 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # Cache the browser download; key changes when the Playwright version in package-lock.json changes.
+      - name: Cache Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      # No --with-deps: GitHub's Ubuntu runners already have Chromium's system libraries, and the apt step
+      # it adds is what hung for 10+ minutes on 2026-11-11. Fail fast instead of eating the job timeout.
+      - name: Install Playwright browser
+        timeout-minutes: 5
+        run: npx playwright install chromium
       - run: npm test
       - name: Keep the test report if anything failed
         if: failure()
